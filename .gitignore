@@ -1,0 +1,33 @@
+# Python bytecode
+__pycache__/
+*.py[cod]
+
+# Virtual environment
+venv/
+.env
+
+# Flask instance folder (contains config, secrets)
+instance/
+
+# SQLAlchemy database files (if any)
+*.db
+
+# Logs
+*.log
+
+# Editor and IDE files
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Pytest cache
+.pytest_cache/
+
+# dotenv backup files or environment variable files
+.env.*
+
+# MyPy cache
+.mypy_cache/
