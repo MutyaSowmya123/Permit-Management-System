@@ -157,6 +157,6 @@ This project is licensed under the **MIT License**.
 
 ## Author
 
-Made with ❤️ by **Your Name**
-[GitHub](https://github.com/your-username)
+Made with ❤️ by **Sowmya Mutya**
+[GitHub](https://github.com/MutyaSowmya123)
 
