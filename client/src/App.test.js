@@ -1,19 +1,19 @@
+// src/App.test.js
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import App from './App';
 
-jest.mock('axios', () => ({
-  get: jest.fn(),
-  post: jest.fn(),
-  delete: jest.fn(),
+jest.mock('./api/contacts', () => ({
+  fetchContacts: jest.fn(),
+  addContact: jest.fn(),
+  deleteContact: jest.fn(),
 }));
 
-import axios from 'axios';
+import { fetchContacts, addContact, deleteContact } from './api/contacts';
 
-
-test('renders contact list manager and adds contact', async () => {
-  axios.get.mockResolvedValue({ data: [] });
-  axios.post.mockResolvedValue({});
-  axios.get.mockResolvedValueOnce({ data: [] }).mockResolvedValueOnce({ data: [{ id: 1, name: 'John', email: 'john@example.com' }] });
+test('renders and adds contact', async () => {
+  fetchContacts.mockResolvedValueOnce({ data: [] });
+  addContact.mockResolvedValueOnce({});
+  fetchContacts.mockResolvedValueOnce({ data: [{ id: 1, name: 'John', email: 'john@example.com' }] });
 
   render(<App />);
 
@@ -21,10 +21,9 @@ test('renders contact list manager and adds contact', async () => {
 
   fireEvent.change(screen.getByPlaceholderText(/Name/i), { target: { value: 'John' } });
   fireEvent.change(screen.getByPlaceholderText(/Email/i), { target: { value: 'john@example.com' } });
-
   fireEvent.click(screen.getByText(/Add Contact/i));
 
   await waitFor(() => {
-    expect(screen.getByText(/John/i)).toBeInTheDocument();
+    expect(screen.getByText(/john@example.com/i)).toBeInTheDocument();
   });
 });
