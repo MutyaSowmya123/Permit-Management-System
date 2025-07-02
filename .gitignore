@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # Python bytecode
 __pycache__/
 *.py[cod]
@@ -32,34 +31,3 @@ Thumbs.db
 
 # MyPy cache
 .mypy_cache/
-=======
-# Node modules for root, client, and server
-node_modules/
-client/node_modules/
-server/node_modules/
-
-# Environment variable files
-.env
-client/.env
-server/.env
-
-# SQLite database file
-server/contacts.db
-
-# Build output
-client/build/
-
-# Logs
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-
-# OS/Editor-specific
-.DS_Store
-Thumbs.db
-.vscode/
-.idea/
-
-# Test coverage (if used later)
-coverage/
->>>>>>> origin/main
