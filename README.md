@@ -10,3 +10,4 @@ A simplified backend system where users (e.g., store owners) can:
 - View status of submitted applications
 
 - Admins can approve/reject applications
+
