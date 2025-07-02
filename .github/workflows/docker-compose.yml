@@ -3,7 +3,7 @@ name: Build and Test Docker Compose
 on:
   push:
     branches:
-      - main  # Trigger on push to the main branch
+      - main
   pull_request:
     branches:
       - main
@@ -42,7 +42,14 @@ jobs:
 
       - name: Run tests
         run: |
-          docker exec $(docker-compose ps -q db) python -m unittest discover
+          BACKEND_ID=$(docker-compose ps -q backend)
+          if [ "$(docker inspect -f '{{.State.Running}}' $BACKEND_ID)" = "true" ]; then
+            docker exec $BACKEND_ID python -m unittest discover
+          else
+            echo "Backend container is not running."
+            docker-compose logs backend
+            exit 1
+          fi
 
       - name: Shut down Docker Compose
         run: |
