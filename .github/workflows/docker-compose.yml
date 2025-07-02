@@ -42,7 +42,7 @@ jobs:
 
       - name: Run tests
         run: |
-          docker exec $(docker-compose ps -q backend) python -m unittest discover
+          docker exec $(docker-compose ps -q db) python -m unittest discover
 
       - name: Shut down Docker Compose
         run: |
