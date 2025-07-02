@@ -20,4 +20,4 @@ services:
       MYSQL_DATABASE: permits
       MYSQL_ROOT_PASSWORD: "${MYSQL_ROOT_PASSWORD}"  # Reference environment variable from the .env file
     ports:
-      - "3306:3306"
+      - "3307:3306"
