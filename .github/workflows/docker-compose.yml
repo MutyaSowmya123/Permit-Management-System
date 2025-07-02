@@ -38,7 +38,7 @@ jobs:
 
       - name: Wait for MySQL to be ready
         run: |
-          docker exec $(docker-compose ps -q mysql) bash -c "while ! mysqladmin ping --host=localhost --silent; do sleep 1; done; echo 'MySQL is up!'"
+          docker exec $(docker-compose ps -q db) bash -c "while ! mysqladmin ping --host=localhost --silent; do sleep 1; done; echo 'MySQL is up!'"
 
       - name: Run tests
         run: |
