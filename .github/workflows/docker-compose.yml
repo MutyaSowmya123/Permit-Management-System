@@ -1,0 +1,48 @@
+name: Build and Test Docker Compose
+
+on:
+  push:
+    branches:
+      - main  # You can customize this to match your branch
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    services:
+      # MySQL service running from the Docker Compose file
+      mysql:
+        image: mysql:8
+        ports:
+          - 3306:3306
+        env:
+          MYSQL_DATABASE: permits
+          MYSQL_ROOT_PASSWORD: ${{ secrets.MYSQL_ROOT_PASSWORD }}
+        options: --health-cmd="mysqladmin ping --host=localhost --silent" --health-interval=10s --health-timeout=5s --health-retries=3
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Docker
+        uses: docker/setup-buildx-action@v2
+
+      - name: Build and start services with Docker Compose
+        run: |
+          docker-compose -f docker-compose.yml up --build -d
+
+      - name: Wait for MySQL to be ready
+        run: |
+          docker exec backend bash -c "while ! mysqladmin ping --host=db --silent; do sleep 1; done; echo 'MySQL is up!'"
+
+      - name: Run tests (if applicable)
+        run: |
+          # Example: Run any tests, here it's assumed you have tests for your app
+          docker exec backend python -m unittest discover
+
+      - name: Shut down Docker Compose
+        run: |
+          docker-compose down
