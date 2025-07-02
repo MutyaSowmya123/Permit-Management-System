@@ -3,7 +3,7 @@ name: Build and Test Docker Compose
 on:
   push:
     branches:
-      - main  # You can customize this to match your branch
+      - main  # Trigger on push to the main branch
   pull_request:
     branches:
       - main
@@ -26,6 +26,12 @@ jobs:
           curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
           sudo chmod +x /usr/local/bin/docker-compose
 
+      - name: Create .env file from secrets
+        run: |
+          echo "MYSQL_ROOT_PASSWORD=${{ secrets.MYSQL_ROOT_PASSWORD }}" >> .env
+          echo "DB_URL=${{ secrets.DB_URL }}" >> .env
+          echo "JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}" >> .env
+
       - name: Build and start services with Docker Compose
         run: |
           docker-compose -f docker-compose.yml up --build -d
@@ -34,9 +40,8 @@ jobs:
         run: |
           docker exec $(docker-compose ps -q mysql) bash -c "while ! mysqladmin ping --host=localhost --silent; do sleep 1; done; echo 'MySQL is up!'"
 
-      - name: Run tests (if applicable)
+      - name: Run tests
         run: |
-          # Example: Run any tests, here it's assumed you have tests for your app
           docker exec $(docker-compose ps -q backend) python -m unittest discover
 
       - name: Shut down Docker Compose
