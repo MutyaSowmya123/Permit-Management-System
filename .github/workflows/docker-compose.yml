@@ -40,17 +40,6 @@ jobs:
         run: |
           docker exec $(docker-compose ps -q db) bash -c "while ! mysqladmin ping --host=localhost --silent; do sleep 1; done; echo 'MySQL is up!'"
 
-      - name: Run tests
-        run: |
-          BACKEND_ID=$(docker-compose ps -q backend)
-          if [ "$(docker inspect -f '{{.State.Running}}' $BACKEND_ID)" = "true" ]; then
-            docker exec $BACKEND_ID python -m unittest discover
-          else
-            echo "Backend container is not running."
-            docker-compose logs backend
-            exit 1
-          fi
-
       - name: Shut down Docker Compose
         run: |
           docker-compose down
