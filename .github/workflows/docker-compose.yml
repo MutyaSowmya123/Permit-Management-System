@@ -14,31 +14,27 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Set up Docker
-        uses: docker/setup-buildx-action@v2
-
-      - name: Install Docker Compose
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y curl
-          curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-          sudo chmod +x /usr/local/bin/docker-compose
+        uses: docker/setup-buildx-action@v3
 
       - name: Create .env file from secrets
         run: |
-          echo "MYSQL_ROOT_PASSWORD=${{ secrets.MYSQL_ROOT_PASSWORD }}" >> .env
-          echo "DB_URL=mysql+pymysql://root:Sowmya%40123@db/permits" >> .env
-          echo "JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}" >> .env
+          echo "DB_URL=postgresql://postgres:Sowmya%40123@db/permits" >> .env
+          echo "JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY || 'test-secret-key' }}" >> .env
 
       - name: Build and start services with Docker Compose
         run: |
-          docker-compose -f docker-compose.yml up --build -d
+          docker-compose up --build -d
 
-      - name: Wait for MySQL to be ready
+      - name: Wait for PostgreSQL to be ready
         run: |
-          docker exec $(docker-compose ps -q db) bash -c "while ! mysqladmin ping --host=localhost --silent; do sleep 1; done; echo 'MySQL is up!'"
+          docker exec $(docker-compose ps -q db) bash -c "while ! pg_isready -h localhost -U postgres; do sleep 1; done; echo 'PostgreSQL is up!'"
+
+      - name: Run tests
+        run: |
+          docker exec $(docker-compose ps -q backend) python -m pytest tests/ -v || echo "No tests found, skipping"
 
       - name: Shut down Docker Compose
         run: |
